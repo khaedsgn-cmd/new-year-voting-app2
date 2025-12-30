@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Итоги года от крыс</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        /* Все стили из предыдущего кода */
+        :root {
+            --bg-color: #0a2e1f;
+            --card-bg: #0d3b2a;
+            --text-color: #f0f0f0;
+            --primary-red: #e63946;
+            --primary-green: #2a9d8f;
+            --accent-gold: #e9c46a;
+            --accent-light: #f4a261;
+            --border-color: #1b5e3e;
+            --shadow: 0 8px 25px rgba(0, 20, 10, 0.3);
+            --radius: 16px;
+            --holiday-red: #d62828;
+            --holiday-green: #2a9d8f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a2e1f 0%, #0d3b2a 50%, #1b5e3e 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(233, 196, 106, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 20%, rgba(42, 157, 143, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 40% 40%, rgba(230, 57, 70, 0.05) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .garland {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .garland-line {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(233, 196, 106, 0.3);
+        }
+
+        .garland-light {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            top: 4px;
+            animation: garlandBlink 2s infinite;
+        }
+
+        .garland-light:nth-child(1) { left: 5%; animation-delay: 0s; background-color: var(--primary-red); }
+        .garland-light:nth-child(2) { left: 15%; animation-delay: 0.2s; background-color: var(--primary-green); }
+        .garland-light:nth-child(3) { left: 25%; animation-delay: 0.4s; background-color: var(--accent-gold); }
+        .garland-light:nth-child(4) { left: 35%; animation-delay: 0.6s; background-color: var(--primary-red); }
+        .garland-light:nth-child(5) { left: 45%; animation-delay: 0.8s; background-color: var(--primary-green); }
+        .garland-light:nth-child(6) { left: 55%; animation-delay: 1.0s; background-color: var(--accent-gold); }
+        .garland-light:nth-child(7) { left: 65%; animation-delay: 1.2s; background-color: var(--primary-red); }
+        .garland-light:nth-child(8) { left: 75%; animation-delay: 1.4s; background-color: var(--primary-green); }
+        .garland-light:nth-child(9) { left: 85%; animation-delay: 1.6s; background-color: var(--accent-gold); }
+        .garland-light:nth-child(10) { left: 95%; animation-delay: 1.8s; background-color: var(--primary-red); }
+
+        @keyframes garlandBlink {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
+        }
+
+        .santa-hat {
+            position: fixed;
+            top: -10px;
+            right: 30px;
+            width: 80px;
+            height: 90px;
+            z-index: 99;
+            transform: rotate(15deg);
+            transition: transform 0.5s ease;
+        }
+
+        .santa-hat:hover {
+            transform: rotate(25deg) scale(1.1);
+        }
+
+        .hat-base {
+            position: absolute;
+            width: 100%;
+            height: 70px;
+            background-color: var(--primary-red);
+            border-radius: 40px 40px 0 0;
+            top: 0;
+            left: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .hat-ball {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .hat-fur {
+            position: absolute;
+            width: 100%;
+            height: 25px;
+            background-color: white;
+            bottom: 0;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0 30px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), var(--primary-green), var(--accent-gold), transparent);
+            border-radius: 2px;
+        }
+
+        .rat-holder {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .rat-icon {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            filter: drop-shadow(0 5px 15px rgba(233, 196, 106, 0.5));
+            animation: floatRat 6s ease-in-out infinite;
+        }
+
+        @keyframes floatRat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .rat-holder::before, .rat-holder::after {
+            content: "🐭";
+            position: absolute;
+            font-size: 2rem;
+            top: 50%;
+            animation: bounce 2s infinite;
+        }
+
+        .rat-holder::before {
+            left: -50px;
+            animation-delay: 0.2s;
+        }
+
+        .rat-holder::after {
+            right: -50px;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent-gold), var(--primary-green), var(--accent-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #d0f0e4;
+        }
+
+        .nominations-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .nomination {
+            background: linear-gradient(145deg, rgba(13, 59, 42, 0.9), rgba(11, 50, 35, 0.9));
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nomination::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-red), var(--accent-gold));
+        }
+
+        .nomination:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 30, 15, 0.4);
+            border-color: rgba(233, 196, 106, 0.6);
+        }
+
+        .nomination-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(42, 157, 143, 0.3);
+        }
+
+        .nomination-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-red), var(--accent-light));
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+            border: 2px solid var(--accent-gold);
+        }
+
+        .nomination h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, var(--accent-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nominees {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .nominee {
+            padding: 18px 15px;
+            border: 2px solid rgba(42, 157, 143, 0.4);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .nominee::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(233, 196, 106, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nominee:hover::before {
+            left: 100%;
+        }
+
+        .nominee:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nominee.selected {
+            border-color: var(--primary-red);
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1), rgba(42, 157, 143, 0.1));
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.2);
+        }
+
+        .nominee.selected::after {
+            content: "✓";
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.5);
+            z-index: 2;
+        }
+
+        .nominee-name {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #f0f0f0;
+        }
+
+        .snowflakes-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: blur(0.5px);
+        }
+
+        .progress-container {
+            background: linear-gradient(145deg, rgba(13, 59, 42, 0.9), rgba(11, 50, 35, 0.9));
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--accent-gold), var(--primary-red));
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .vote-button-container {
+            position: sticky;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 50;
+            margin-top: 30px;
+        }
+
+        .vote-button {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: white;
+            border: none;
+            padding: 22px 50px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        .vote-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s;
+        }
+
+        .vote-button:hover::before {
+            left: 100%;
+        }
+
+        .vote-button:disabled {
+            background: #5a7d6e;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .vote-button:not(:disabled):hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(230, 57, 70, 0.6);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 30, 20, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #0d3b2a, #0a2e1f);
+            padding: 40px;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent-gold);
+            position: relative;
+            transform: translateY(30px) scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+
+        .modal p {
+            margin-bottom: 30px;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .modal-button {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.1rem;
+            min-width: 150px;
+        }
+
+        .modal-confirm {
+            background: linear-gradient(135deg, var(--primary-green), #34c9a6);
+            color: white;
+        }
+
+        .modal-cancel {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .modal-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .captcha-modal .modal-content {
+            max-width: 600px;
+            padding: 30px;
+        }
+
+        .captcha-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .captcha-instruction {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #d0f0e4;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .captcha-task {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1), rgba(42, 157, 143, 0.1));
+            border-radius: 12px;
+            border: 2px solid rgba(233, 196, 106, 0.3);
+        }
+
+        .correct-ball-color {
+            font-weight: bold;
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(233, 196, 106, 0.5);
+            font-size: 1.5rem;
+            padding: 5px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .tree-container {
+            position: relative;
+            height: 300px;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .tree {
+            position: relative;
+            width: 200px;
+            height: 250px;
+        }
+
+        .tree-trunk {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 40px;
+            background: linear-gradient(to bottom, #8B4513, #654321);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .tree-layer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 70px solid #0d7a5f;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tree-layer:nth-child(2) {
+            border-left-width: 70px;
+            border-right-width: 70px;
+            border-bottom-width: 90px;
+            border-bottom-color: #0b8a6a;
+            bottom: 110px;
+        }
+
+        .tree-layer:nth-child(3) {
+            border-left-width: 90px;
+            border-right-width: 90px;
+            border-bottom-width: 110px;
+            border-bottom-color: #0a9a75;
+            bottom: 200px;
+        }
+
+        .tree-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.3),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .tree-decoration:hover {
+            transform: scale(1.2);
+            box-shadow: 
+                inset 0 0 25px rgba(255, 255, 255, 0.4),
+                0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .tree-decoration.selected {
+            transform: scale(1.3);
+            box-shadow: 
+                0 0 30px currentColor,
+                inset 0 0 25px rgba(255, 255, 255, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
+
+        .tree-decoration::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 15px;
+            background: linear-gradient(to bottom, var(--accent-gold), #8B4513);
+            border-radius: 2px;
+            z-index: -1;
+        }
+
+        .ball-red {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #d62828);
+            color: #ffd8d8;
+        }
+
+        .ball-green {
+            background: radial-gradient(circle at 30% 30%, #7cfc9f, #2a9d8f);
+            color: #d4f7e2;
+        }
+
+        .ball-blue {
+            background: radial-gradient(circle at 30% 30%, #64b5f6, #1e88e5);
+            color: #c5e3ff;
+        }
+
+        .ball-gold {
+            background: radial-gradient(circle at 30% 30%, #ffd93d, #e9c46a);
+            color: #fff9e1;
+        }
+
+        .ball-silver {
+            background: radial-gradient(circle at 30% 30%, #e0e0e0, #b0b0b0);
+            color: #f5f5f5;
+        }
+
+        .ball-purple {
+            background: radial-gradient(circle at 30% 30%, #b388eb, #7b1fa2);
+            color: #e6d7f8;
+        }
+
+        .captcha-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .captcha-success {
+            background: rgba(42, 157, 143, 0.2);
+            border: 2px solid var(--primary-green);
+            color: #a8f0e6;
+        }
+
+        .captcha-error {
+            background: rgba(230, 57, 70, 0.2);
+            border: 2px solid var(--primary-red);
+            color: #ffb8b8;
+        }
+
+        .captcha-hint {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .tree-star {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            filter: drop-shadow(0 0 10px rgba(233, 196, 106, 0.7));
+            animation: starTwinkle 2s infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes starTwinkle {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .success-modal .modal-content {
+            background: linear-gradient(145deg, #0d3b2a, #0a2e1f);
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            animation: celebrate 1.5s ease-in-out;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0.5) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(15deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nominees {
+                grid-template-columns: 1fr;
+            }
+            
+            .rat-holder::before, .rat-holder::after {
+                display: none;
+            }
+            
+            .santa-hat {
+                width: 60px;
+                height: 70px;
+                right: 15px;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .modal-button {
+                width: 100%;
+            }
+            
+            .vote-button {
+                padding: 18px 35px;
+                font-size: 1.2rem;
+            }
+            
+            .tree-container {
+                height: 250px;
+            }
+            
+            .tree {
+                width: 180px;
+                height: 220px;
+            }
+            
+            .tree-decoration {
+                width: 25px;
+                height: 25px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nomination {
+                padding: 20px;
+            }
+            
+            .nomination h2 {
+                font-size: 1.4rem;
+            }
+            
+            .captcha-modal .modal-content {
+                padding: 20px;
+            }
+            
+            .tree-container {
+                height: 220px;
+            }
+            
+            .tree {
+                width: 160px;
+                height: 200px;
+            }
+        }
+
+        .holiday-icon {
+            position: fixed;
+            font-size: 2rem;
+            z-index: 0;
+            opacity: 0.3;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="garland">
+        <div class="garland-line"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+        <div class="garland-light"></div>
+    </div>
+    
+    <div class="santa-hat">
+        <div class="hat-base"></div>
+        <div class="hat-fur"></div>
+        <div class="hat-ball"></div>
+    </div>
+    
+    <div class="snowflakes-container" id="snowflakes"></div>
+    
+    <div class="holiday-icon" style="top: 10%; left: 5%; animation-delay: 0s;">🎄</div>
+    <div class="holiday-icon" style="top: 15%; right: 10%; animation-delay: 1s;">🎁</div>
+    <div class="holiday-icon" style="bottom: 20%; left: 8%; animation-delay: 2s;">✨</div>
+    <div class="holiday-icon" style="bottom: 15%; right: 5%; animation-delay: 3s;">🕯️</div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="rat-holder">
+                <div class="rat-icon">🐭</div>
+            </div>
+            <h1>Итоги года от крыс</h1>
+            <p>Крыса держит в лапках результаты вашего голосования! Выберите лучших в каждой номинации и определите победителей этого года.</p>
+        </header>
+        
+        <div class="nominations-container" id="nominationsContainer">
+            <!-- Номинации будут сгенерированы через JavaScript -->
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-text">
+                <span><strong>Прогресс голосования:</strong></span>
+                <span id="progressCount">0</span> из <span id="totalNominations">7</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="vote-button-container">
+            <button class="vote-button" id="voteButton" disabled>
+                <i class="fas fa-paper-plane"></i>
+                Отправить голос
+            </button>
+        </div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3>Подтвердите голосование</h3>
+            <p>Вы уверены, что хотите отправить свой голос? После подтверждения изменить выбор будет невозможно.</p>
+            <div class="modal-buttons">
+                <button class="modal-button modal-confirm" id="confirmVote">Подтвердить</button>
+                <button class="modal-button modal-cancel" id="cancelVote">Вернуться</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal captcha-modal" id="captchaModal">
+        <div class="modal-content">
+            <div class="captcha-title">
+                <i class="fas fa-tree"></i>
+                Новогодняя проверка
+            </div>
+            
+            <div class="captcha-instruction">
+                Выберите на ёлке новогодний шарик указанного цвета. Это помогает нам убедиться, что голосует человек, а не программа.
+            </div>
+            
+            <div class="captcha-task">
+                Найдите и выберите 
+                <span class="correct-ball-color" id="correctBallColor">красный</span>
+                шарик на ёлке:
+            </div>
+            
+            <div class="tree-container">
+                <div class="tree" id="christmasTree">
+                    <div class="tree-trunk"></div>
+                    <div class="tree-layer"></div>
+                    <div class="tree-layer"></div>
+                    <div class="tree-layer"></div>
+                    <div class="tree-star">⭐</div>
+                </div>
+            </div>
+            
+            <div class="captcha-result" id="captchaResult"></div>
+            
+            <div class="captcha-hint">
+                <i class="fas fa-lightbulb"></i> 
+                Нажмите на шарик, чтобы выбрать его
+            </div>
+            
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="modal-button modal-cancel" id="cancelCaptcha">Отмена</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">🎉</div>
+            <h3>Голос принят!</h3>
+            <p>Ваш голос успешно сохранён и отправлен организаторам. Спасибо за участие в определении итогов года! С наступающим Новым годом! 🎄</p>
+            <button class="modal-button modal-confirm" id="closeSuccess">Закрыть</button>
+        </div>
+    </div>
+    
+    <!-- Подключаем наш JavaScript файл -->
+    <script src="index.js"></script>
+</body>
+</html>
